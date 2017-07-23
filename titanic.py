@@ -118,9 +118,6 @@ autolabel(rects2)
 plt.show()
 #END plot survived statistice by age
 
-X_train.drop(['Name', "Survived", "Cabin", "Ticket"], axis=1, inplace=True)
-X_test.drop(['Name', "Survived", "Cabin", "Ticket"], axis=1, inplace=True)
-
 # replace literal values with numeric
 from sklearn.preprocessing import LabelEncoder
 labelencoder_X = LabelEncoder()
@@ -133,8 +130,23 @@ labelencoder_X.fit(np.unique(list(X_train['Embarked'].values) + list(X_test['Emb
 X_train['Embarked'] = labelencoder_X.transform(X_train['Embarked'])
 X_test['Embarked'] = labelencoder_X.transform(X_test['Embarked'])
 
+X_train.drop(['Name', "Survived", "Cabin", "Ticket"], axis=1, inplace=True)
+X_test.drop(['Name', "Survived", "Cabin", "Ticket"], axis=1, inplace=True)
+
 # perform features scaling
 from sklearn.preprocessing import StandardScaler
 sc_X = StandardScaler()
 X_train = sc_X.fit_transform(X_train)
 X_test = sc_X.transform(X_test)
+
+from sklearn.ensemble import RandomForestClassifier
+random_forest = RandomForestClassifier(n_estimators=100)
+random_forest.fit(X_train, y_train)
+y_pred = random_forest.predict(X_test)
+print('RandomForest result: ', random_forest.score(X_test, y_test))
+
+from sklearn.linear_model import LogisticRegression
+logreg = LogisticRegression()
+logreg.fit(X_train, y_train)
+Y_pred = logreg.predict(X_test)
+print('LogisticRegression result: ', logreg.score(X_test, y_test))
