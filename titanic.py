@@ -91,7 +91,6 @@ died_by_age = X_train[X_train['Survived'] == 0][['Age', 'Survived']].groupby(pd.
 
 N = len(survived_by_age.values)
 ind = np.arange(N)
-print(ind)
 width = 0.35
 
 fig, ax = plt.subplots(figsize=(10,5))
