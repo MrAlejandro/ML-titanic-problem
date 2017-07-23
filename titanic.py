@@ -10,6 +10,7 @@ y = dataset.iloc[:, 1:2]
 # splitting to train and test datasets
 from sklearn.cross_validation import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(dataset, y, test_size = 1/3, random_state = 0)
+#print(X_train)
 
 # START plot survived statistics for men and women
 men_total_set = X_train[X_train['Sex'] == 'male']
@@ -26,7 +27,6 @@ width = 0.35
 
 fig, ax = plt.subplots()
 rects1 = ax.bar(ind, [men_survived_qty, men_total_qty - men_survived_qty], width, color='r')
-
 rects2 = ax.bar(ind + width, [women_survived_qty, women_total_qty - women_survived_qty], width, color='b')
 
 ax.set_ylabel('People quantity')
@@ -64,7 +64,6 @@ died_by_class = class_statistics[::2].values
 
 fig, ax = plt.subplots()
 rects1 = ax.bar(ind, survived_by_class, width, color='g')
-
 rects2 = ax.bar(ind + width, died_by_class, width, color='r')
 
 ax.set_ylabel('People quantity')
@@ -80,5 +79,37 @@ autolabel(rects2)
 plt.show()
 # END plot survived statistics by class
 
+#START plot survived statistice by age
+max_age = X_train['Age'].max()
+
+range_step = 10
+range_from = 0;
+range_to = max_age + 2 * range_step
+
+survived_by_age = X_train[X_train['Survived'] == 1][['Age', 'Survived']].groupby(pd.cut(X_train[X_train['Survived'] == 1]["Age"], np.arange(range_from, range_to, range_step))).size()
+died_by_age = X_train[X_train['Survived'] == 0][['Age', 'Survived']].groupby(pd.cut(X_train[X_train['Survived'] == 0]["Age"], np.arange(range_from, range_to, range_step))).size()
+
+N = len(survived_by_age.values)
+ind = np.arange(N)
+print(ind)
+width = 0.35
+
+fig, ax = plt.subplots(figsize=(10,5))
+rects1 = ax.bar(ind, survived_by_age, width, color='g')
+rects2 = ax.bar(ind + width, died_by_age, width, color='r')
+
+ax.set_ylabel('People quantity')
+ax.set_title('Survival statistics by age')
+ax.set_xticks(ind + width / 2)
+ax.set_xticklabels(list(survived_by_age.keys()))
+#ax.set_xticklabels((1,2,3,4,5,6,7,8,9))
+
+ax.legend((rects1[0], rects2[0]), ('Survived', 'Died'))
+
+autolabel(rects1)
+autolabel(rects2)
+
+plt.show()
+#END plot survived statistice by age
 
 # TODO: don't forget to drop the Survived column when start training
