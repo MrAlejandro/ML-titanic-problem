@@ -36,7 +36,6 @@ ax.set_xticklabels(('Survived', 'Died'))
 
 ax.legend((rects1[0], rects2[0]), ('Men', 'Women'))
 
-
 def autolabel(rects):
     """
     Attach a text label above each bar displaying its height
@@ -52,5 +51,34 @@ autolabel(rects2)
 
 plt.show()
 # END plot survived statistics for men and women
+
+# START plot survived statistics by class
+class_statistics = X_train[['Pclass', 'Survived']].groupby(['Pclass', 'Survived']).size()
+
+N = 3
+ind = np.arange(N)
+width = 0.35
+
+survived_by_class = class_statistics[1::2].values
+died_by_class = class_statistics[::2].values
+
+fig, ax = plt.subplots()
+rects1 = ax.bar(ind, survived_by_class, width, color='g')
+
+rects2 = ax.bar(ind + width, died_by_class, width, color='r')
+
+ax.set_ylabel('People quantity')
+ax.set_title('Survival statistics by class')
+ax.set_xticks(ind + width / 2)
+ax.set_xticklabels(('1st class', '2nd class', '3rd class'))
+
+ax.legend((rects1[0], rects2[0]), ('Survived', 'Died'))
+
+autolabel(rects1)
+autolabel(rects2)
+
+plt.show()
+# END plot survived statistics by class
+
 
 # TODO: don't forget to drop the Survived column when start training
