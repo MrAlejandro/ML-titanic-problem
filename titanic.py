@@ -10,6 +10,8 @@ imputer = Imputer(missing_values = 'NaN', strategy = 'mean', axis = 0)
 imputer = imputer.fit(dataset.iloc[:, 5:6])
 dataset.iloc[:, 5:6] = imputer.transform(dataset.iloc[:, 5:6])
 
+dataset["Embarked"] = dataset["Embarked"].fillna("S")
+
 #X = dataset.drop('Survived', axis=1)
 y = dataset.iloc[:, 1:2]
 
@@ -116,4 +118,23 @@ autolabel(rects2)
 plt.show()
 #END plot survived statistice by age
 
-# TODO: don't forget to drop the Survived column when start training
+X_train.drop(['Name', "Survived", "Cabin", "Ticket"], axis=1, inplace=True)
+X_test.drop(['Name', "Survived", "Cabin", "Ticket"], axis=1, inplace=True)
+
+# replace literal values with numeric
+from sklearn.preprocessing import LabelEncoder
+labelencoder_X = LabelEncoder()
+labelencoder_X.fit(np.unique(list(X_train['Sex'].values) + list(X_test['Sex'].values)))
+X_train['Sex'] = labelencoder_X.transform(X_train['Sex'])
+X_test['Sex'] = labelencoder_X.transform(X_test['Sex'])
+
+
+labelencoder_X.fit(np.unique(list(X_train['Embarked'].values) + list(X_test['Embarked'].values)))
+X_train['Embarked'] = labelencoder_X.transform(X_train['Embarked'])
+X_test['Embarked'] = labelencoder_X.transform(X_test['Embarked'])
+
+# perform features scaling
+from sklearn.preprocessing import StandardScaler
+sc_X = StandardScaler()
+X_train = sc_X.fit_transform(X_train)
+X_test = sc_X.transform(X_test)
