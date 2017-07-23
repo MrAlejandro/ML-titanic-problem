@@ -4,6 +4,12 @@ import pandas as pd
 
 dataset = pd.read_csv('data.csv')
 
+# handling missing data
+from sklearn.preprocessing import Imputer
+imputer = Imputer(missing_values = 'NaN', strategy = 'mean', axis = 0)
+imputer = imputer.fit(dataset.iloc[:, 5:6])
+dataset.iloc[:, 5:6] = imputer.transform(dataset.iloc[:, 5:6])
+
 #X = dataset.drop('Survived', axis=1)
 y = dataset.iloc[:, 1:2]
 
@@ -101,7 +107,6 @@ ax.set_ylabel('People quantity')
 ax.set_title('Survival statistics by age')
 ax.set_xticks(ind + width / 2)
 ax.set_xticklabels(list(survived_by_age.keys()))
-#ax.set_xticklabels((1,2,3,4,5,6,7,8,9))
 
 ax.legend((rects1[0], rects2[0]), ('Survived', 'Died'))
 
