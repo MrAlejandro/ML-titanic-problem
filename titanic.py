@@ -148,5 +148,5 @@ print('RandomForest result: ', random_forest.score(X_test, y_test))
 from sklearn.linear_model import LogisticRegression
 logreg = LogisticRegression()
 logreg.fit(X_train, y_train)
-Y_pred = logreg.predict(X_test)
+y_pred = logreg.predict(X_test)
 print('LogisticRegression result: ', logreg.score(X_test, y_test))
