@@ -120,18 +120,21 @@ plt.show()
 
 # replace literal values with numeric
 from sklearn.preprocessing import LabelEncoder
+
 labelencoder_X = LabelEncoder()
-labelencoder_X.fit(np.unique(list(X_train['Sex'].values) + list(X_test['Sex'].values)))
-X_train['Sex'] = labelencoder_X.transform(X_train['Sex'])
-X_test['Sex'] = labelencoder_X.transform(X_test['Sex'])
 
+# handle Sex column
+labelencoder_X.fit(np.unique(list(X_train.iloc[:, 4:5].values) + list(X_train.iloc[:, 4:5].values)))
+X_train.iloc[:, 4:5] = labelencoder_X.transform(X_train.iloc[:, 4:5].values.ravel())
+X_test.iloc[:, 4:5] = labelencoder_X.transform(X_test.iloc[:, 4:5])
 
-labelencoder_X.fit(np.unique(list(X_train['Embarked'].values) + list(X_test['Embarked'].values)))
-X_train['Embarked'] = labelencoder_X.transform(X_train['Embarked'])
-X_test['Embarked'] = labelencoder_X.transform(X_test['Embarked'])
+# handle Embarked column
+labelencoder_X.fit(np.unique(list(X_train.iloc[:, 11:12].values) + list(X_test.iloc[:, 11:12].values)))
+X_train.iloc[:, 11:12] = labelencoder_X.transform(X_train.iloc[:, 11:12])
+X_test.iloc[:, 11:12] = labelencoder_X.transform(X_test.iloc[:, 11:12])
 
-X_train.drop(['Name', "Survived", "Cabin", "Ticket"], axis=1, inplace=True)
-X_test.drop(['Name', "Survived", "Cabin", "Ticket"], axis=1, inplace=True)
+X_train = X_train.drop(['Name', "Survived", "Cabin", "Ticket"], axis=1)
+X_test = X_test.drop(['Name', "Survived", "Cabin", "Ticket"], axis=1)
 
 # perform features scaling
 from sklearn.preprocessing import StandardScaler
@@ -141,12 +144,12 @@ X_test = sc_X.transform(X_test)
 
 from sklearn.ensemble import RandomForestClassifier
 random_forest = RandomForestClassifier(n_estimators=100)
-random_forest.fit(X_train, y_train)
+random_forest.fit(X_train, y_train.values.ravel())
 y_pred = random_forest.predict(X_test)
 print('RandomForest result: ', random_forest.score(X_test, y_test))
 
 from sklearn.linear_model import LogisticRegression
 logreg = LogisticRegression()
-logreg.fit(X_train, y_train)
+logreg.fit(X_train, y_train.values.ravel())
 y_pred = logreg.predict(X_test)
 print('LogisticRegression result: ', logreg.score(X_test, y_test))
